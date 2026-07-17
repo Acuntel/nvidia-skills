@@ -13,6 +13,7 @@ metadata:
     - python-bindings
 ---
 
+
 # cuOpt Developer Skill
 
 Contribute to the NVIDIA cuOpt codebase. This skill is for modifying cuOpt itself, not for using it.
@@ -86,6 +87,13 @@ Is this correct?"
 ### 5. No Privileged Operations
 
 `sudo`/system-level changes are the one non-negotiable refusal; user-space installs and conda env setup are allowed. See [Refusal Rules — Read First](#refusal-rules--read-first).
+
+### 6. Prefer Low-Maintenance, Hard-to-Break Designs
+
+When adding an API — a setter, endpoint, parameter, or a layer that wraps another — favor the design that keeps a single source of truth and has no silent-failure path:
+
+- **Derive, don't duplicate.** A second copy of a surface (a hand-maintained list of the methods/fields another layer already defines, or shadow state kept in parallel with the real data) drifts the moment someone forgets to update it. Derive it from the single source instead, so there is nothing to keep in sync.
+- **Fail loud, not silent.** Prefer a design where forgetting a step is caught automatically over one that quietly does the wrong thing. When a mechanism leans on a convention, add a test that asserts full coverage, so a case that slips the convention fails CI instead of silently misbehaving.
 
 ---
 
